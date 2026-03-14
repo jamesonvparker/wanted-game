@@ -2,7 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>WANTED — v25 Navigation Layer</title>
+<meta property="og:title" content="WANTED — A Heist Board Game">
+<meta property="og:description" content="Cops vs Robbers. Plan heists, crack vaults, slip away — or lock them all up.">
+<meta property="og:image" content="wanted-share-image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="WANTED — A Heist Board Game">
+<meta name="twitter:description" content="Cops vs Robbers. Plan heists, crack vaults, slip away — or lock them all up.">
+<meta name="twitter:image" content="wanted-share-image.png">
+<title>WANTED — A Heist Board Game</title>
 <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Share+Tech+Mono&family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -161,7 +169,39 @@ canvas{display:block;}
 .ai-entry.warn{color:#aa7744;}
 .ai-entry.warn::before{content:'! ';}
 
-/* ── LEFT PANEL ─────────────────────────────────────── */
+/* ── CARD SHOWCASE (below board) ─────────────────────── */
+#card-showcase{display:none;width:100%;background:var(--bg);border-top:1px solid var(--border);
+  flex-shrink:0;overflow:hidden;}
+.cs-halves{display:flex;height:200px;}
+.cs-half{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.cs-half-r{border-right:1px solid var(--border);}
+.cs-hdr{display:flex;align-items:center;gap:8px;padding:5px 12px;
+  border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg3);}
+.cs-hdr-title{font-family:'Share Tech Mono',monospace;font-size:.46em;letter-spacing:.2em;
+  color:var(--dim);text-transform:uppercase;}
+.cs-hdr-badge{font-family:'Share Tech Mono',monospace;font-size:.42em;letter-spacing:.1em;
+  padding:1px 6px;border:1px solid var(--border);}
+.cs-hdr-badge.robber{border-color:#3a1010;color:#884444;}
+.cs-hdr-badge.police{border-color:#0e1a30;color:#335588;}
+.cs-cards{display:flex;flex-direction:row;gap:4px;padding:6px 10px;
+  overflow-x:auto;align-items:flex-start;flex:1;scrollbar-width:thin;
+  scrollbar-color:rgba(255,255,255,.07) transparent;}
+.cs-cards::-webkit-scrollbar{height:3px;}
+.cs-cards::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);}
+.cs-card-wrap{flex-shrink:0;width:100px;height:140px;position:relative;
+  transition:transform .15s,filter .15s;cursor:default;}
+.cs-card-wrap.in-hand{cursor:pointer;}
+.cs-card-wrap.in-hand:hover{transform:translateY(-6px) scale(1.05);filter:brightness(1.2);}
+.cs-card-wrap.in-hand .cs-in-hand-dot{display:block;}
+.cs-card-wrap .v25-tc,.cs-card-wrap .v25-pc{
+  transform-origin:top left;transform:scale(0.4);pointer-events:none;
+  position:absolute;top:0;left:0;}
+.cs-in-hand-dot{display:none;position:absolute;bottom:3px;left:50%;
+  transform:translateX(-50%);width:5px;height:5px;border-radius:50%;
+  background:var(--gold);box-shadow:0 0 6px var(--gold);}
+.cs-empty{font-family:'Share Tech Mono',monospace;font-size:.5em;letter-spacing:.1em;
+  color:var(--dim);padding:12px;align-self:center;}
+
 #left-panel{width:220px;flex-shrink:0;display:flex;flex-direction:column;gap:1px;
   background:var(--border);border:1px solid var(--border);border-right:none;
   overflow:hidden;align-self:stretch;transition:width .2s ease;}
@@ -1549,20 +1589,36 @@ canvas{display:block;}
 /* ════════════════════════════════════════════════════
    CARD ZONE INFO PANEL
 ════════════════════════════════════════════════════ */
-#card-zone-inner { display: grid !important; grid-template-columns: auto 1fr auto; align-items: stretch; padding: 10px 16px; gap: 0; min-height: 195px; }
-#cz-deck-area { border-right: 1px solid var(--border); padding-right: 16px; align-self: center; }
-#cz-hand-area { padding: 0 16px; border-right: 1px solid var(--border); overflow: hidden; min-width: 0; }
-#cz-info-panel { display: none; overflow: hidden; flex-shrink: 0; flex-direction: column; align-items: center; justify-content: flex-start; padding: 0; width: 0; }
-#cz-info-panel.open { display: flex; width: 210px; padding: 8px 14px; }
-#cz-info-card-wrap { flex-shrink: 0; }
-#cz-info-desc { font-family: 'Share Tech Mono',monospace; font-size: .48em; letter-spacing: .08em; color: rgba(255,255,255,.45); line-height: 1.7; margin-top: 8px; text-align: center; }
-#cz-info-phase { font-family: 'Share Tech Mono',monospace; font-size: .44em; letter-spacing: .14em; text-transform: uppercase; margin-top: 6px; text-align: center; }
-#cz-info-play-btn { margin-top: 10px; width: 100%; padding: 6px; font-family: 'Share Tech Mono',monospace; font-size: .5em; letter-spacing: .16em; text-transform: uppercase; background: none; border: 1px solid rgba(52,211,153,.3); color: #34d399; cursor: pointer; border-radius: 3px; transition: background .15s; }
-#cz-info-play-btn:hover { background: rgba(52,211,153,.1); }
-#cz-info-play-btn:disabled { opacity: .3; cursor: default; }
-#cz-info-close { font-family: 'Share Tech Mono',monospace; font-size: .42em; letter-spacing: .12em; color: rgba(255,255,255,.2); background: none; border: none; cursor: pointer; margin-top: 6px; text-transform: uppercase; }
-#cz-info-close:hover { color: rgba(255,255,255,.45); }
-.cz-hand-card.selected { filter: brightness(1.25) !important; transform: translateY(-8px) scale(1.06) !important; outline: 2px solid rgba(240,200,80,.6); outline-offset: 2px; border-radius: 8px; }
+#card-zone-inner { display: flex !important; flex-direction: row; align-items: stretch; padding: 0; gap: 0; min-height: 195px; position: relative; }
+.cz-side { flex: 1; display: flex; flex-direction: row; align-items: center; padding: 10px 14px; gap: 14px; min-width: 0; overflow: hidden; }
+.cz-side-deck { flex-shrink: 0; display: flex; align-items: center; border-right: 1px solid var(--border); padding-right: 14px; }
+.cz-side-hand { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; overflow: hidden; }
+.cz-col-div { width: 1px; background: var(--border); flex-shrink: 0; align-self: stretch; }
+#cz-deck-area { display: none; } /* legacy — replaced by .cz-side-deck */
+#cz-hand-area  { display: none; } /* legacy — replaced by .cz-side-hand  */
+/* on-card play button — overlays bottom of card on hover */
+.cz-card-play-btn{
+  position:absolute;bottom:22px;left:4px;right:4px;
+  padding:5px 0;font-family:'Share Tech Mono',monospace;font-size:.48em;
+  letter-spacing:.12em;text-transform:uppercase;text-align:center;
+  background:rgba(6,8,14,.88);border:1px solid rgba(52,211,153,.5);
+  color:#34d399;cursor:pointer;border-radius:3px;
+  opacity:0;transform:translateY(4px);
+  transition:opacity .15s,transform .15s;pointer-events:none;z-index:20;}
+.cz-hand-card:not(.locked):hover .cz-card-play-btn{
+  opacity:1;transform:translateY(0);pointer-events:all;}
+.cz-card-play-btn.bike{border-color:rgba(251,146,60,.5);color:#fb923c;}
+.cz-card-play-btn.smoke-escape{border-color:rgba(240,200,80,.5);color:#f0c850;}
+/* discard badge — shown when hand full and draw pending */
+.cz-card-discard-btn{
+  position:absolute;top:4px;right:4px;width:20px;height:20px;
+  background:rgba(239,68,68,.8);border:none;border-radius:50%;
+  color:#fff;font-size:.7em;cursor:pointer;display:none;
+  align-items:center;justify-content:center;z-index:20;line-height:1;}
+.cz-card-discard-btn.show{display:flex;}
+/* remove old info panel */
+#cz-info-panel{display:none!important;}
+.cz-hand-card.selected{filter:brightness(1.25)!important;transform:translateY(-8px) scale(1.06)!important;outline:2px solid rgba(240,200,80,.6);outline-offset:2px;border-radius:8px;}
 
 
 /* ══════════════════════════════════════════════════════
@@ -2248,28 +2304,43 @@ canvas{display:block;}
     <div id="card-zone">
       <div id="cz-draw-prompt"></div>
       <div id="card-zone-inner">
-        <div id="cz-deck-area">
-          <div class="cz-deck-wrap" id="cz-tool-wrap">
-            <div id="cz-tool-station"></div>
-            <div class="cz-deck-label">Tool Deck</div>
-            <div class="cz-deck-count" id="cz-tool-count">21 cards</div>
+        <!-- LEFT: Robber tools -->
+        <div class="cz-side" id="cz-robber-side">
+          <div class="cz-side-deck">
+            <div class="cz-deck-wrap" id="cz-tool-wrap">
+              <div id="cz-tool-station"></div>
+              <div class="cz-deck-label">Tool Deck</div>
+              <div class="cz-deck-count" id="cz-tool-count">21 cards</div>
+            </div>
           </div>
-          <div class="cz-deck-wrap" id="cz-police-wrap">
-            <div id="cz-police-station"></div>
-            <div class="cz-deck-label">Police Deck</div>
-            <div class="cz-deck-count" id="cz-police-count">20 cards</div>
+          <div class="cz-side-hand">
+            <div class="cz-hand-label" id="cz-hand-label">R1 Hand (0/3)</div>
+            <div id="cz-hand-cards"><div class="cz-no-cards">No cards yet</div></div>
           </div>
         </div>
-        <div id="cz-hand-area">
-          <div class="cz-hand-label" id="cz-hand-label">Hand</div>
-          <div id="cz-hand-cards"><div class="cz-no-cards">No cards yet</div></div>
+        <!-- Divider -->
+        <div class="cz-col-div"></div>
+        <!-- RIGHT: Police actions -->
+        <div class="cz-side" id="cz-police-side">
+          <div class="cz-side-deck">
+            <div class="cz-deck-wrap" id="cz-police-wrap">
+              <div id="cz-police-station"></div>
+              <div class="cz-deck-label">Police Deck</div>
+              <div class="cz-deck-count" id="cz-police-count">20 cards</div>
+            </div>
+          </div>
+          <div class="cz-side-hand">
+            <div class="cz-hand-label" id="cz-police-hand-label">Police Hand (0)</div>
+            <div id="cz-police-hand-cards"><div class="cz-no-cards">No cards in hand</div></div>
+          </div>
         </div>
-        <!-- Info panel — right column, opens on card click -->
+        <!-- Info panel — absolute overlay on click -->
         <div id="cz-info-panel">
           <div id="cz-info-card-wrap"></div>
           <div id="cz-info-desc"></div>
           <div id="cz-info-phase"></div>
           <button id="cz-info-play-btn" onclick="czInfoPlay()">▶ Play Card</button>
+          <button id="cz-info-discard-btn" onclick="czInfoDiscard()" style="display:none;margin-top:6px;width:100%;padding:6px;font-family:'Share Tech Mono',monospace;font-size:.5em;letter-spacing:.16em;text-transform:uppercase;background:none;border:1px solid rgba(239,68,68,.35);color:#ef4444;cursor:pointer;border-radius:3px;transition:background .15s;">🗑 Discard to Draw</button>
           <button id="cz-info-close" onclick="czInfoClose()">✕ close</button>
         </div>
       </div>
@@ -2283,8 +2354,9 @@ canvas{display:block;}
           <button class="cz-confirm-btn cancel" onclick="cancelPlay()">✕ Cancel</button>
         </div>
       </div>
-    </div>
-  </div>
+    </div><!-- /#card-zone -->
+
+  </div><!-- /.board-wrap -->
   <div class="sidebar">
     <div class="panel">
       <div class="panel-title">Dispatch Terminal</div>
@@ -2905,6 +2977,20 @@ canvas{display:block;}
     </div>
   </div>
 </div>
+
+<div class="v24-screen" id="v24-blocked">
+  <div class="v24-ssw"></div>
+  <div class="v24-gr" style="opacity:.5;width:5px"></div><div class="v24-gb" style="opacity:.5;width:5px"></div>
+  <div class="v24-sl"></div>
+  <div class="v24-sb">
+    <div class="v24-slbl" id="v24-blbl" style="color:rgba(251,146,60,.9)">Blocked In!</div>
+    <div class="v24-ssil">🚧</div>
+    <div class="v24-sinstr" id="v24-binstr">Roadblocks on all sides — no moves available</div>
+    <div class="v24-sneed">Turn forfeited — end turn to continue</div>
+    <button class="v24-srbtn" style="border-color:rgba(251,146,60,.4);color:rgba(251,146,60,.8)" onclick="v24Try('BlockedEnd',v24BlockedEnd)">End Turn →</button>
+  </div>
+</div>
+
 
 <div class="v24-screen" id="v24-heist-success">
   <div class="v24-hsg"></div><div class="v24-sl"></div>
@@ -3710,8 +3796,7 @@ function resizeCanvas(){
   const header=document.querySelector('header');
   const cardZone=document.getElementById('card-zone');
   const headerH=header?header.offsetHeight:42;
-  const czH=(cardZone&&cardZone.style.display!=='none')?cardZone.offsetHeight||195:0;
-  const lpW=_lpVisible?LEFT_PANEL_W:0;
+  const czH=(cardZone&&cardZone.style.display!=='none')?cardZone.offsetHeight||195:0;  const lpW=_lpVisible?LEFT_PANEL_W:0;
   const availW=window.innerWidth-SIDEBAR_W-lpW-2;
   const availH=window.innerHeight-headerH-czH-2;
   const newCS=Math.max(18,Math.floor(Math.min(availW/COLS,availH/ROWS)));
@@ -4622,7 +4707,7 @@ function startGame(){
   animating=false; hoverPath=[]; selToken=null; reach=new Map(); reachPrev=new Map();
   heatToks=[]; blocks=[]; dragnet=0; policeHand=[]; resetFx(); pendingPlay=null; targetingMode=null; czCanDrawTool=false; czCanDrawPolice=false; czMounted=false; pendingToolDraw=false; playPhase='pre_roll'; cpuThinking=false; autoPaused=false; slipPending=null; roadblockPending=null; pendingMove=null; helicopterPending=null; forgedPapersPending=null;
   cpuReasoning=null;
-  // Show reasoning panel only when CPU is playing either side
+  _csBuilt=false; // rebuild card showcase for new game
   const hasCpu=cfg.opponent==='cpu'||cfg.autoPlay;
   // reasoning panel removed — CPU output now in tabbed log
   hideThoughtBubble();
@@ -4633,12 +4718,12 @@ function startGame(){
     robbers.push({id:ROBBER_LABELS[i],color:ROBBER_COLORS[i],pos:null,hand:[],
       mission:md[i%md.length],hasLoot:false,arrested:false,escaped:false,
       disguise:false,movesLeft:0,rolled:false,lastPos:null,prevTurnPos:null,
-      heat:0,heatSpawned:false,frozenTurns:0,forgedPapersActive:false,forgedExit:null});
+      heat:0,heatSpawned:false,frozenTurns:0,forgedPapersActive:false,forgedExit:null,_roundMoves:0});
   }
   rIdx=0;
   officers=[];
   for(let i=0;i<cfg.cops;i++){
-    officers.push({id:`O${i+1}`,pos:{...OfficerStarts[i]},warrants:0,movesLeft:0,prevTurnPos:null,lastPos:null,posHistory:[]});
+    officers.push({id:`O${i+1}`,pos:{...OfficerStarts[i]},warrants:0,movesLeft:0,prevTurnPos:null,lastPos:null,posHistory:[],_roundMoves:0});
   }
   oIdx=0; oRolled=false;
 
@@ -5645,6 +5730,10 @@ function selectRobber(ri){
   selToken=rb.id;
   const{dist,prev}=bfs(rb.pos.r,rb.pos.c,rb.movesLeft,true,ri);
   reach=dist; reachPrev=prev; hoverPath=[];
+  // If robber has moves left but is completely blocked, show the blocked-in screen
+  if(reach.size===0 && rb.movesLeft>0 && isHumanTurn() && phase==='robber_turn'){
+    setTimeout(()=>v24Try('ShowBlocked',()=>v24ShowBlocked(ri)), 400);
+  }
   renderAll();
 }
 function selectOfficer(i){
@@ -5662,6 +5751,7 @@ function doMove(r,c){
     const rb=robbers[rIdx];
     const dist=reach.get(`${r},${c}`)||1;
     rb.movesLeft-=dist;
+    rb._roundMoves=(rb._roundMoves||0)+dist;
     const path=reconstructPath(rb.pos.r,rb.pos.c,r,c,reachPrev)||[{r,c}];
     const cell=grid[r][c];
     const viaAlley=path.some(s=>grid[s.r][s.c].type===C.ALLEY);
@@ -5739,6 +5829,7 @@ function doMove(r,c){
     const o=officers[oIdx];
     const dist=reach.get(`${r},${c}`)||1;
     o.movesLeft-=dist;
+    o._roundMoves=(o._roundMoves||0)+dist;
     const path=reconstructPath(o.pos.r,o.pos.c,r,c,reachPrev)||[{r,c}];
     const viaAlleyO=path.some(s=>grid[s.r][s.c].type===C.ALLEY);
     addLog(`Officer ${o.id} → [${c},${r}]${viaAlleyO?' <span style="color:#7c3aed">(via alley)</span>':''}.`,'cop');
@@ -6128,13 +6219,23 @@ function playCard(ri,i){
     addLog(`🎭 ${rb.id}: Disguise active.`,'imp');
   } else if(card.id==='getaway_bike'){
     if(rb.rolled){addLog('Getaway Bike must be played before rolling.');return;}
-    const a=Math.ceil(Math.random()*6),b=Math.ceil(Math.random()*6);
-    let best=Math.max(a,b);
-    if(rb.heat>=HEAT_SLOW_THRESH) best=Math.min(best,4);
-    if(rb.hasLoot) best=Math.max(1,best-1);
-    rb.movesLeft=best; rb.rolled=true; rb.hand.splice(i,1);
-    animDice(best); addLog(`🏍️ Bike: rolled ${a}&${b} — using <b>${best}</b>${rb.heat>=HEAT_SLOW_THRESH?' (heat cap)':''}.`,'imp');
-    selectRobber(ri);
+    rb.hand.splice(i,1);
+    const bikeScenario = {
+      nd: 2,
+      label: '🏍️ Getaway Bike — Roll 2d6, Take Higher',
+      bike: true,
+      heat: rb.heat >= HEAT_SLOW_THRESH,
+      loot: rb.hasLoot,
+    };
+    openDiceModal(bikeScenario, result => {
+      let best = result;
+      if(rb.heat >= HEAT_SLOW_THRESH){ best = Math.min(best, 4); addLog(`🌡️ Heat cap — capped at <b>${best}</b>.`, 'bad'); }
+      if(rb.hasLoot){ best = Math.max(1, best - 1); addLog(`🏍️ Bike: best die <b>${best}</b> <span style="color:var(--dim)">(–1 loot)</span>.`); }
+      else { addLog(`🏍️ Bike: best die → <b>${best}</b>.`, 'imp'); }
+      rb.movesLeft = best; rb.rolled = true; playPhase = 'post_roll';
+      animDice(best); selectRobber(ri); renderAll();
+    });
+    return;
   } else if(card.id==='smoke_bomb'&&rb.pos){
     blocks.push({r:rb.pos.r,c:rb.pos.c,turns:2,type:'smoke'}); rb.hand.splice(i,1);
     addLog(`💨 ${rb.id} Smoke Bomb at [${rb.pos.c},${rb.pos.r}] — square blocked to police for 2 rounds.`,'imp');
@@ -6158,6 +6259,14 @@ function playCard(ri,i){
     renderAll(); return;
   }
   renderAll();
+  // Re-check if still on a tool tile after playing a card (hand may now have room)
+  if(phase==='robber_turn'&&isHumanTurn()){
+    const rb2=robbers[ri];
+    if(rb2?.pos&&grid[rb2.pos.r][rb2.pos.c].type===C.TOOL&&rb2.hand.length<3){
+      czCanDrawTool=true;
+      renderCardZone();
+    }
+  }
 }
 function checkWinConditions(){
   const allDone=robbers.every(rb=>rb.arrested||rb.escaped);
@@ -6483,6 +6592,9 @@ function advanceToNewRound(){
     // Compute moves stat before renderAll clears per-round tracking
     const totalMoves=robbers.reduce((s,rb)=>s+(typeof rb._roundMoves==='number'?rb._roundMoves:0),0)
                     +officers.reduce((s,o)=>s+(typeof o._roundMoves==='number'?o._roundMoves:0),0);
+    // Reset per-round move counters now that we've captured them
+    robbers.forEach(rb=>{ rb._roundMoves=0; });
+    officers.forEach(o=>{ o._roundMoves=0; });
     v24Try('ShowRound',()=>{
       // Temporarily stash moves for the screen reader
       let tmp=document.getElementById('_v24-tmp-moves');
@@ -7331,8 +7443,8 @@ function renderAll(){
   safeCall('renderUI', renderUI);
   const inGame=phase!=='setup'&&phase!=='game_over';
   const cz=document.getElementById('card-zone');
-  if(cz) cz.style.display=inGame?'block':'none';
-  if(inGame) safeCall('renderCardZone', renderCardZone);
+  if(cz) cz.style.display=robbers.length>0?'block':'none';
+  if(robbers.length>0) safeCall('renderCardZone', renderCardZone);
 }
 
 function renderUI(){
@@ -7806,7 +7918,7 @@ function switchLogTab(tab) {
 
 function buildGameDeckStation(deckId, backType, onDraw) {
   const wrap = document.createElement('div');
-  wrap.style.cssText = 'display:flex;flex-direction:row;align-items:center;gap:8px;';
+  wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px;';
   const stackArea = document.createElement('div');
   stackArea.className = 'deck-stack-area';
   const stackWrap = document.createElement('div');
@@ -7824,16 +7936,7 @@ function buildGameDeckStation(deckId, backType, onDraw) {
   const hint=document.createElement('div'); hint.className='deck-draw-hint';
   hint.id=`cz-hint-${deckId}`; hint.textContent='↑ click to draw'; stackArea.appendChild(hint);
   stackArea.addEventListener('click', onDraw); wrap.appendChild(stackArea);
-  const arrow=document.createElement('div');
-  arrow.textContent='→'; arrow.style.cssText="font-family:'Share Tech Mono',monospace;font-size:.8em;color:#222;flex-shrink:0;";
-  wrap.appendChild(arrow);
-  const flipWrap=document.createElement('div'); flipWrap.className='flip-container';
-  flipWrap.style.width=GAME_CARD_W+'px'; flipWrap.style.height=GAME_CARD_H+'px';
-  const flipInner=document.createElement('div'); flipInner.className='flip-inner'; flipInner.id=`cz-flip-${deckId}`;
-  const backFace=document.createElement('div'); backFace.className='flip-face flip-face-back'; backFace.id=`cz-flipback-${deckId}`;
-  backFace.innerHTML='<div class="dealt-placeholder"><div class="dealt-placeholder-icon">🎴</div><div class="dealt-placeholder-text" style="font-size:.7em">Draw a card</div></div>';
-  const frontFace=document.createElement('div'); frontFace.className='flip-face flip-face-front'; frontFace.id=`cz-flipfront-${deckId}`;
-  flipInner.appendChild(backFace); flipInner.appendChild(frontFace); flipWrap.appendChild(flipInner); wrap.appendChild(flipWrap);
+  // Note: flip/reveal area removed — drawn card appears directly in hand
   return wrap;
 }
 
@@ -7849,13 +7952,13 @@ function czResetDeck(deckId) {
 function czDrawFromDeck(deckId, buildFn, onDone) {
   const st=czDeckState[deckId]; if(!st||st.busy)return;
   st.busy=true;
-  const fi=document.getElementById(`cz-flip-${deckId}`);
+  const fi=document.getElementById(`cz-flip-${deckId}`);   // may be null — flip area removed
   const bf=document.getElementById(`cz-flipback-${deckId}`);
   const ff=document.getElementById(`cz-flipfront-${deckId}`);
   const tc=document.getElementById(`cz-top-${deckId}`);
   function doFlip() {
     const artEl=safeCall('buildCardArt',buildFn);
-    if(artEl) {
+    if(artEl && ff) {
       artEl.style.cssText+=`width:${GAME_CARD_W}px!important;height:${GAME_CARD_H}px!important;font-size:${Math.round(GAME_SCALE*100)}%!important;border-radius:${Math.round(14*GAME_SCALE)}px!important;flex-shrink:0!important;min-height:unset!important;transform:none!important;`;
       ff.innerHTML=''; ff.appendChild(artEl);
     }
@@ -7863,7 +7966,8 @@ function czDrawFromDeck(deckId, buildFn, onDone) {
     setTimeout(()=>{
       if(tc) tc.classList.remove('dealing');
       if(fi) fi.classList.add('is-flipped');
-      setTimeout(()=>{st.flipped=true;st.busy=false;safeCall('onCardDrawn',onDone);renderCardZone();},650);
+      // Delay matches old flip animation — card lands in hand after this
+      setTimeout(()=>{st.flipped=true;st.busy=false;safeCall('onCardDrawn',onDone);renderCardZone();},fi?650:100);
     },420);
   }
   if(!st.flipped) { doFlip(); }
@@ -7873,7 +7977,7 @@ function czDrawFromDeck(deckId, buildFn, onDone) {
     setTimeout(()=>{
       if(bf){bf.innerHTML='';const be=buildBackEl(deckId==='tool'?'tool':'police');be.style.borderRadius=Math.round(14*GAME_SCALE)+'px';bf.appendChild(be);}
       setTimeout(doFlip,120);
-    },480);
+    },fi?480:0);
   }
 }
 
@@ -7892,7 +7996,12 @@ function czMount() {
 function czClickToolDeck() {
   if(!czCanDrawTool||phase!=='robber_turn'||!isHumanTurn()) return;
   const rb=robbers[rIdx]; if(!rb) return;
-  if(rb.hand.length>=3){addLog(`${rb.id}: hand full.`,'bad');czCanDrawTool=false;renderCardZone();return;}
+  if(rb.hand.length>=3){
+    addLog(`${rb.id}: hand full (3/3) — discard a card from your hand first, then click the deck.`,'bad');
+    // Don't clear czCanDrawTool — keep the draw opportunity open so they can discard + draw
+    renderCardZone();
+    return;
+  }
   if(toolDeck.length===0) toolDeck=buildDeck(TOOL_DEFS);
   const card={...toolDeck.shift()};
   const artData=getCardArtData(card.id,'tool');
@@ -7937,18 +8046,15 @@ function renderCardZone() {
   updateCzCount('tool'); updateCzCount('police');
   const isCop   = phase==='police_turn';
   const isHuman = isHumanTurn();
-  const cards   = isCop ? policeHand : (robbers[rIdx]?.hand||[]);
-  const ctype   = isCop ? 'police' : 'tool';
   const PL = {pre_roll:'Pre-Roll',post_roll:'Post-Roll',moving:'Moving',post_move:'Post-Move',pre_move:'Pre-Move'};
 
-  // Close info panel if selected card no longer exists or phase changed
-  if(czInfoCardIndex !== null && czInfoCardIndex >= cards.length) czInfoClose();
-
+  // ── Deck draw-ready styling ──────────────────────────────
   const tw=document.getElementById('cz-tool-wrap');
   const pw=document.getElementById('cz-police-wrap');
-  if(tw){tw.style.display=isCop?'none':'flex';tw.classList.toggle('cz-draw-ready',!isCop&&czCanDrawTool&&isHuman);tw.classList.remove('cz-cop-ready');}
-  if(pw){pw.style.display=isCop?'flex':'none';pw.classList.toggle('cz-cop-ready',isCop&&czCanDrawPolice&&isHuman);pw.classList.remove('cz-draw-ready');}
+  if(tw){ tw.style.display='flex'; tw.classList.toggle('cz-draw-ready',!isCop&&czCanDrawTool&&isHuman); tw.classList.remove('cz-cop-ready'); }
+  if(pw){ pw.style.display='flex'; pw.classList.toggle('cz-cop-ready',isCop&&czCanDrawPolice&&isHuman); pw.classList.remove('cz-draw-ready'); }
 
+  // ── Draw prompt ──────────────────────────────────────────
   const prompt=document.getElementById('cz-draw-prompt');
   if(prompt){
     if(!isCop&&czCanDrawTool&&isHuman){prompt.textContent='🃏 You landed on ◈ — click the Tool Deck to draw!';prompt.style.display='block';prompt.style.color='#a78bfa';}
@@ -7956,38 +8062,81 @@ function renderCardZone() {
     else{prompt.style.display='none';}
   }
 
-  const lbl=document.getElementById('cz-hand-label');
-  if(lbl) lbl.textContent=isCop?`Police Hand (${policeHand.length})`:(`${robbers[rIdx]?.id||'R1'} Hand (${cards.length}/3)`);
+  // ── Robber hand (left side) ──────────────────────────────
+  const rbCards = robbers[rIdx]?.hand || [];
+  const lbl = document.getElementById('cz-hand-label');
+  if(lbl) lbl.textContent = `${robbers[rIdx]?.id||'R1'} Hand (${rbCards.length}/3)`;
+  renderHandInto('cz-hand-cards', rbCards, 'tool', isHuman && !isCop);
 
-  const hand=document.getElementById('cz-hand-cards');
+  // ── Police hand (right side) ─────────────────────────────
+  const polLbl = document.getElementById('cz-police-hand-label');
+  if(polLbl) polLbl.textContent = `Police Hand (${policeHand.length})`;
+  renderHandInto('cz-police-hand-cards', policeHand, 'police', isHuman && isCop);
+
+  // Close info panel if selected card no longer exists (no-op now — kept for safety)
+  const activeDeck = isCop ? policeHand : rbCards;
+}
+
+// Shared helper — renders a hand array into a container by ID
+function renderHandInto(containerId, cards, ctype, isActiveHuman) {
+  const hand = document.getElementById(containerId);
   if(!hand) return;
-  hand.innerHTML='';
-  if(cards.length===0){hand.innerHTML='<div class="cz-no-cards">No cards in hand</div>';return;}
-
-  cards.forEach((card,i)=>{
-    const vp=card.playableIn||[];
-    const inPhase=vp.includes(playPhase);
-    const whenLbl=vp.map(p=>PL[p]||p).join(' / ');
-    const artData=getCardArtData(card.id,ctype);
-    const slot=document.createElement('div');
-    // All cards are clickable (to inspect) — locked ones just can't be played
-    slot.className='cz-hand-card'+(inPhase?'':' locked');
-    slot.title=card.name+' — click to inspect'+(inPhase?' and play':'');
-    if(artData){
-      const artEl=ctype==='tool'?buildToolCard(artData):buildPoliceCard(artData);
-      artEl.style.cssText+=`width:${GAME_CARD_W}px!important;height:${GAME_CARD_H}px!important;font-size:${Math.round(GAME_SCALE*100)}%!important;border-radius:${Math.round(14*GAME_SCALE)}px!important;flex-shrink:0!important;min-height:unset!important;transform:none!important;`;
+  const PL = {pre_roll:'Pre-Roll',post_roll:'Post-Roll',moving:'Moving',post_move:'Post-Move',pre_move:'Pre-Move'};
+  const showDiscard = !!(czCanDrawTool && ctype === 'tool' && (robbers[rIdx]?.hand?.length >= 3));
+  hand.innerHTML = '';
+  if(cards.length === 0){ hand.innerHTML='<div class="cz-no-cards">No cards in hand</div>'; return; }
+  cards.forEach((card, i) => {
+    const vp = card.playableIn || [];
+    const inPhase = vp.includes(playPhase);
+    const whenLbl = vp.map(p=>PL[p]||p).join(' / ');
+    const isSmokeEsc = card.id === 'smoke_bomb' && slipPending?.hasSmokeOption && isHumanTurn();
+    const artData = getCardArtData(card.id, ctype);
+    const slot = document.createElement('div');
+    slot.className = 'cz-hand-card' + (inPhase || isSmokeEsc ? '' : ' locked');
+    const artEl = artData
+      ? (ctype==='tool' ? buildToolCard(artData) : buildPoliceCard(artData))
+      : null;
+    if(artEl){
+      artEl.style.cssText += `width:${GAME_CARD_W}px!important;height:${GAME_CARD_H}px!important;font-size:${Math.round(GAME_SCALE*100)}%!important;border-radius:${Math.round(14*GAME_SCALE)}px!important;flex-shrink:0!important;min-height:unset!important;transform:none!important;`;
       slot.appendChild(artEl);
     } else {
-      slot.innerHTML=`<div style="width:${GAME_CARD_W}px;height:${GAME_CARD_H}px;background:#111;border:1px solid #333;border-radius:${Math.round(14*GAME_SCALE)}px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;"><div style="font-size:1.4em">${card.icon}</div><div style="font-size:.5em;color:#888;font-family:'Share Tech Mono',monospace">${card.name}</div></div>`;
+      slot.innerHTML = `<div style="width:${GAME_CARD_W}px;height:${GAME_CARD_H}px;background:#111;border:1px solid #333;border-radius:${Math.round(14*GAME_SCALE)}px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;"><div style="font-size:1.4em">${card.icon}</div><div style="font-size:.5em;color:#888;font-family:'Share Tech Mono',monospace">${card.name}</div></div>`;
     }
-    const tag=document.createElement('div'); tag.className='cz-phase-tag';
-    tag.style.color=inPhase?'#34d399':'rgba(255,255,255,.2)';
-    tag.textContent=(inPhase?'▶ ':'🔒 ')+whenLbl; slot.appendChild(tag);
-    // Click always opens info panel — play button lives inside it
-    if(isHuman) slot.addEventListener('click',()=>{
-      if(czInfoCardIndex===i){ czInfoClose(); } // toggle off
-      else { czInfoOpen(i, ctype); }
-    });
+    // Phase tag
+    const tag = document.createElement('div'); tag.className = 'cz-phase-tag';
+    tag.style.color = (inPhase || isSmokeEsc) ? '#34d399' : 'rgba(255,255,255,.2)';
+    tag.textContent = (inPhase || isSmokeEsc ? '▶ ' : '🔒 ') + whenLbl;
+    slot.appendChild(tag);
+    // Play button — overlays on hover for active playable cards
+    if(isActiveHuman && (inPhase || isSmokeEsc)){
+      const btn = document.createElement('button');
+      btn.className = 'cz-card-play-btn' +
+        (card.id === 'getaway_bike' ? ' bike' : isSmokeEsc ? ' smoke-escape' : '');
+      btn.textContent = card.id === 'getaway_bike' ? '🏍️ Roll 2 Dice' :
+                        isSmokeEsc ? '💨 Escape Free' : '▶ Play';
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        if(isSmokeEsc){ useSmokeEscape(); return; }
+        if(card.id === 'getaway_bike'){ playCard(rIdx, i); return; }
+        requestPlay(ctype, rIdx, i);
+      });
+      slot.appendChild(btn);
+    }
+    // Discard badge — shown when hand full and draw pending
+    if(isActiveHuman && showDiscard){
+      const db = document.createElement('button');
+      db.className = 'cz-card-discard-btn show';
+      db.title = 'Discard to draw new card';
+      db.textContent = '×';
+      db.addEventListener('click', e => {
+        e.stopPropagation();
+        cards.splice(i, 1);
+        addLog(`🗑 ${robbers[rIdx]?.id||'R1'} discards <b>${card.icon} ${card.name}</b> to make room.`, 'imp');
+        renderAll();
+        czClickToolDeck();
+      });
+      slot.appendChild(db);
+    }
     hand.appendChild(slot);
   });
 }
@@ -8711,6 +8860,21 @@ const DiceEngine = (() => {
       badgeEl.textContent=`Die 1: ${r1}  ·  Die 2: ${r2}`;
       rows=[{lbl:'Die 1',val:`[ ${r1} ]`,vc:'c-raw'},{lbl:'Die 2',val:`[ ${r2} ]`,vc:'c-raw'},{divider:true},dbl?{lbl:'Doubles — Auto Success!',val:'✓',vc:'c-dbl',final:true}:{lbl:'T O T A L',val:String(sum),vc:'c-final',final:true}];
       if(!dbl) pips=Array(sum).fill({cls:''});
+    } else if(s.bike){
+      const [r1,r2]=rolls, best=Math.max(r1,r2??0);
+      titleEl.textContent='Getaway Bike';
+      badgeEl.textContent=`Die 1: ${r1}  ·  Die 2: ${r2??'—'}`;
+      let val=best;
+      rows=[
+        {lbl:'Die 1',val:`[ ${r1} ]`,vc:'c-raw'},
+        {lbl:'Die 2',val:`[ ${r2??'—'} ]`,vc:'c-raw'},
+        {lbl:'Take higher',val:`[ ${best} ]`,vc:'c-raw'},
+      ];
+      if(s.loot){val=Math.max(1,val-1);rows.push({lbl:'Carrying loot',val:'− 1',vc:'c-mod'});}
+      if(s.heat&&val>4){val=4;rows.push({lbl:'Heat cap  (heat ≥ 2)',val:'max 4',vc:'c-cap'});}
+      rows.push({divider:true});
+      rows.push({lbl:'F I N A L   M O V E S',val:String(val),vc:'c-final',final:true});
+      pips=Array(val).fill({cls:''});
     } else if(s.escape){
       titleEl.textContent='Escape Attempt';
       const r=rolls[0],ok=r===6;
@@ -8821,9 +8985,17 @@ async function diceModalRoll() {
   DiceEngine.showPanel(rolls, s);
 
   // Compute final value after modifiers
-  let finalVal = rolls[0];
-  if (s.loot)            finalVal = Math.max(1, finalVal-1);
-  if (s.heat && finalVal > 4) finalVal = 4;
+  let finalVal;
+  if (s.bike) {
+    // Getaway Bike: take the higher of the two dice, then apply modifiers
+    finalVal = Math.max(rolls[0], rolls[1] ?? 0);
+    if (s.loot)            finalVal = Math.max(1, finalVal - 1);
+    if (s.heat && finalVal > 4) finalVal = 4;
+  } else {
+    finalVal = rolls[0];
+    if (s.loot)            finalVal = Math.max(1, finalVal-1);
+    if (s.heat && finalVal > 4) finalVal = 4;
+  }
   _lastResult = finalVal;
 
   // Let the modifier panel animate in (rows stagger ~115ms each + pip delay), then auto-close
@@ -8845,80 +9017,11 @@ async function diceModalRoll() {
 // ── Info panel functions ──────────────────────────────
 let czInfoCardIndex = null; // currently selected hand card index
 
-function czInfoOpen(cardIdx, type) {
-  const isCop = phase === 'police_turn';
-  const cards = isCop ? policeHand : (robbers[rIdx]?.hand || []);
-  const card = cards[cardIdx];
-  if (!card) return;
-
-  czInfoCardIndex = cardIdx;
-
-  const panel = document.getElementById('cz-info-panel');
-  const wrap  = document.getElementById('cz-info-card-wrap');
-  const desc  = document.getElementById('cz-info-desc');
-  const phEl  = document.getElementById('cz-info-phase');
-  const playBtn = document.getElementById('cz-info-play-btn');
-
-  // Render card art at 55% scale
-  const INFO_SCALE = 0.55;
-  const IW = Math.round(250*INFO_SCALE), IH = Math.round(350*INFO_SCALE);
-  const artData = getCardArtData(card.id, type);
-  wrap.innerHTML = '';
-  if (artData) {
-    const artEl = type === 'tool' ? buildToolCard(artData) : buildPoliceCard(artData);
-    artEl.style.cssText += `width:${IW}px!important;height:${IH}px!important;font-size:${Math.round(INFO_SCALE*100)}%!important;border-radius:${Math.round(14*INFO_SCALE)}px!important;flex-shrink:0!important;min-height:unset!important;transform:none!important;`;
-    wrap.appendChild(artEl);
-  }
-
-  const PL = {pre_roll:'Pre-Roll',post_roll:'Post-Roll',moving:'Moving',post_move:'Post-Move',pre_move:'Pre-Move'};
-  const validP = card.playableIn || [];
-  const inPhase = validP.includes(playPhase);
-  const whenLbl = validP.map(p=>PL[p]||p).join(' / ');
-
-  // Special case: smoke bomb during slip-away
-  const isSmokeEscape = card.id === 'smoke_bomb' && slipPending?.hasSmokeOption && isHumanTurn();
-
-  desc.textContent = card.desc;
-  if (isSmokeEscape) {
-    phEl.textContent = '🚨 Use now to escape free!';
-    phEl.style.color = '#f0c850';
-  } else {
-    phEl.textContent = (inPhase ? '▶ ' : '🔒 ') + whenLbl;
-    phEl.style.color = inPhase ? '#34d399' : 'rgba(255,255,255,.3)';
-  }
-
-  const canPlay = isSmokeEscape || (isHumanTurn() && inPhase && !targetingMode && !pendingPlay);
-  playBtn.disabled = !canPlay;
-  playBtn.textContent = isSmokeEscape ? '💨 Use Smoke Bomb — Escape Free!' : (canPlay ? '▶ Play Card' : '🔒 Not playable now');
-  playBtn.style.borderColor = isSmokeEscape ? 'rgba(240,200,80,.6)' : '';
-  playBtn.style.color = isSmokeEscape ? '#f0c850' : '';
-
-  panel.classList.add('open');
-
-  // Highlight selected card
-  document.querySelectorAll('.cz-hand-card').forEach((el,i)=>el.classList.toggle('selected',i===cardIdx));
-}
-
-function czInfoClose() {
-  czInfoCardIndex = null;
-  document.getElementById('cz-info-panel').classList.remove('open');
-  document.querySelectorAll('.cz-hand-card').forEach(el=>el.classList.remove('selected'));
-}
-
-function czInfoPlay() {
-  if (czInfoCardIndex === null) return;
-  const cards = phase === 'police_turn' ? policeHand : (robbers[rIdx]?.hand || []);
-  const card = cards[czInfoCardIndex];
-  // Smoke bomb during slip-away — route directly to escape
-  if (card?.id === 'smoke_bomb' && slipPending?.hasSmokeOption && isHumanTurn()) {
-    czInfoClose();
-    useSmokeEscape();
-    return;
-  }
-  const type = phase === 'police_turn' ? 'police' : 'tool';
-  czInfoClose();
-  requestPlay(type, rIdx, czInfoCardIndex);
-}
+// Info panel removed — play buttons live directly on cards now
+function czInfoOpen(){}
+function czInfoClose(){ czInfoCardIndex = null; }
+function czInfoPlay(){}
+function czInfoDiscard(){}
 
 
 function diceDebugUpdate() {
@@ -9086,7 +9189,7 @@ function v24ShowRound(roundNum, cb){
     document.getElementById('v24-rn').textContent=roundNum;
     const moves=robbers.reduce((s,rb)=>s+(rb.movesLeft!==undefined?0:0),0); // placeholder — actual in hook
     const maxHeat=robbers.reduce((m,rb)=>Math.max(m,rb.heat||0),0);
-    const cards=robbers.reduce((s,rb)=>s+(rb.hand?.length||0),0);
+    const cards=robbers.reduce((s,rb)=>s+(rb.hand?.length||0),0)+(policeHand?.length||0);
     const apbLeft=Math.max(0,ROUND_LIMIT-roundNum+1);
     document.getElementById('v24-rs-moves').textContent=document.getElementById('_v24-tmp-moves')?.textContent||'—';
     document.getElementById('v24-rs-heat').textContent=maxHeat;
@@ -9103,6 +9206,25 @@ function v24CloseRound(){
 }
 
 // ── SLIP-AWAY ──────────────────────────────────────────
+// ── BLOCKED IN ─────────────────────────────────────────
+function v24ShowBlocked(ri){
+  try{
+    const rb=robbers[ri];
+    document.getElementById('v24-blbl').textContent=(rb?.id||'Robber')+' Blocked In!';
+    document.getElementById('v24-binstr').textContent=
+      'Every path is blocked by roadblocks — no moves available this turn.';
+    addLog(`🚧 <b>${rb?.id||'Robber'} is completely blocked</b> — turn forfeited.`,'bad');
+    rb.movesLeft=0;
+    v24Open('v24-blocked');
+  }catch(e){_showErrorOverlay('v24ShowBlocked',e.message,e.stack);}
+}
+function v24BlockedEnd(){
+  try{
+    v24Close('v24-blocked');
+    if(isHumanTurn()) endTurn();
+  }catch(e){_showErrorOverlay('v24BlockedEnd',e.message,e.stack);}
+}
+
 function v24ShowSlip(ri, hasSmokeOption){
   try{
     MusicManager.sting('slip_away');
@@ -9733,7 +9855,104 @@ function v25BuildCards() {
   console.log('[V25] HTP cards built');
 }
 
-// ── PAUSE ─────────────────────────────────────────────────
+// ── IN-GAME CARD SHOWCASE ─────────────────────────────────
+let _csBuilt = false;
+function buildCardShowcase() {
+  if (_csBuilt) return;
+  _csBuilt = true;
+  const toolRow   = document.getElementById('cs-tool-row');
+  const policeRow = document.getElementById('cs-police-row');
+  if (!toolRow || !policeRow) return;
+
+  // Tool cards
+  TOOL_DEFS.forEach(t => {
+    const ac = V25_TC_ACCENTS[t.id] || '#f0c850';
+    const r = parseInt(ac.slice(1,3),16), g = parseInt(ac.slice(3,5),16), b = parseInt(ac.slice(5,7),16);
+    const card = document.createElement('div');
+    card.className = 'v25-tc';
+    card.style.setProperty('--tc-ac', ac);
+    card.style.background = `radial-gradient(ellipse at 50% 30%, rgba(${r},${g},${b},.1) 0%, #0e0c14 65%)`;
+    card.innerHTML = `
+      <div class="v25-tc-stripe" style="background:linear-gradient(90deg,transparent,${ac},transparent);opacity:.6"></div>
+      <div class="v25-tc-cat">Tool Card</div>
+      <div class="v25-tc-bg">${t.icon}</div>
+      <div class="v25-tc-iw"><div class="v25-tc-icon" style="--tc-ac:${ac}">${t.icon}</div></div>
+      <div class="v25-tc-div"></div>
+      <div class="v25-tc-name">${t.name}</div>
+      <div class="v25-tc-eff">${t.desc}</div>
+      <div class="v25-tc-bot"><div class="v25-tc-qty">×${t.qty}</div><div class="v25-tc-badge">Robber Only</div></div>
+    `;
+    const wrap = document.createElement('div');
+    wrap.className = 'cs-card-wrap';
+    wrap.dataset.cardId = t.id;
+    wrap.dataset.cardType = 'tool';
+    wrap.appendChild(card);
+    wrap.appendChild(Object.assign(document.createElement('div'), {className:'cs-in-hand-dot'}));
+    toolRow.appendChild(wrap);
+  });
+
+  // Police cards
+  const policeNums = {warrant:'PD-001',tip_off:'PD-002',apb:'PD-003',roadblock:'PD-004',
+    k9:'PD-005',backup:'PD-006',helicopter:'PD-007',forensics:'PD-008',surveillance:'PD-009',dragnet:'PD-010'};
+  POLICE_DEFS.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'v25-pc';
+    card.innerHTML = `
+      <div class="v25-pc-sl"></div>
+      <div class="v25-pc-hdr"><div class="v25-pc-dept">City P.D.</div><div class="v25-pc-num">${policeNums[p.id]||''}</div></div>
+      <div class="v25-pc-iw"><div class="v25-pc-icon">${p.icon}</div></div>
+      <div class="v25-pc-rule"></div>
+      <div class="v25-pc-name">${p.name}</div>
+      <div class="v25-pc-eff">${p.desc}</div>
+      <div class="v25-pc-bot"><div class="v25-pc-qty">×${p.qty}</div><div class="v25-pc-class">Action Card</div></div>
+    `;
+    const wrap = document.createElement('div');
+    wrap.className = 'cs-card-wrap';
+    wrap.dataset.cardId = p.id;
+    wrap.dataset.cardType = 'police';
+    wrap.appendChild(card);
+    wrap.appendChild(Object.assign(document.createElement('div'), {className:'cs-in-hand-dot'}));
+    policeRow.appendChild(wrap);
+  });
+
+  console.log('[V29] Card showcase built');
+}
+
+function renderCardShowcase() {
+  const showcase = document.getElementById('card-showcase');
+  const inGame = phase !== 'setup' && phase !== 'game_over';
+  if (!showcase) return;
+  showcase.style.display = inGame ? 'block' : 'none';
+  if (!inGame) return;
+
+  buildCardShowcase();
+
+  // Robber hand — which tool card IDs are currently held
+  const rbHand = new Set();
+  robbers.forEach(rb => (rb.hand||[]).forEach(c => rbHand.add(c.id)));
+
+  // Police hand — which action card IDs are currently held
+  const polHand = new Set(policeHand.map(c => c.id));
+
+  // Update robber badge
+  const robBadge = document.getElementById('cs-rob-badge');
+  if (robBadge) robBadge.textContent = rbHand.size > 0 ? `${rbHand.size} in hand` : 'deck';
+
+  // Update police badge
+  const polBadge = document.getElementById('cs-pol-badge');
+  if (polBadge) polBadge.textContent = polHand.size > 0 ? `${polHand.size} in hand` : 'deck';
+
+  // Highlight cards in hand
+  document.querySelectorAll('#cs-tool-row .cs-card-wrap').forEach(wrap => {
+    const inHand = rbHand.has(wrap.dataset.cardId);
+    wrap.classList.toggle('in-hand', inHand);
+  });
+  document.querySelectorAll('#cs-police-row .cs-card-wrap').forEach(wrap => {
+    const inHand = polHand.has(wrap.dataset.cardId);
+    wrap.classList.toggle('in-hand', inHand);
+  });
+}
+
 function v25ShowPause() {
   v25NavTo('v25-pause');
   MusicManager.playPause();
