@@ -3067,6 +3067,7 @@ const MusicManager = (() => {
   let _stingReturn = null; // slotKey to return to after a sting finishes
   let _loaded     = {};    // slotKey → [Audio, ...] (only playable ones)
   let _probed     = false;
+  let _pending    = null;  // { slotKey, loop, returnSlot } — deferred play while loading
 
   // ── Asset probing ────────────────────────────────────
   // Silently probe all files; populate _loaded on success
@@ -3080,12 +3081,18 @@ const MusicManager = (() => {
         a.preload = 'auto';
         a.loop    = false;
         a.volume  = _volume;
-        a.addEventListener('canplaythrough', () => {
+        a.addEventListener('canplay', () => {
           if (!_loaded[key].includes(a)) {
             _loaded[key].push(a);
             console.log('[Music] ready:', file);
             // If background just became available and we're waiting for it, start
             if (key === 'background') _rebuildBgPlaylist();
+            // If we have a pending play request for this slot, fire it now
+            if (_pending && _pending.slotKey === key && !_current) {
+              const p = _pending;
+              _pending = null;
+              _switchTo(p.slotKey, p.loop, p.returnSlot);
+            }
           }
         }, { once: true });
         a.src = file; // triggers load
@@ -3144,10 +3151,13 @@ const MusicManager = (() => {
     if (!_enabled) return;
     const tracks = _loaded[slotKey];
     if (!tracks || tracks.length === 0) {
-      // Track not available — if it was a sting, return to bg anyway
-      if (returnSlot) _switchTo(returnSlot, true, null);
+      // Track still loading — defer so it plays once ready
+      if (!returnSlot) { _pending = { slotKey, loop, returnSlot }; }
+      // If it was a sting with no track, return to bg anyway
+      else _switchTo(returnSlot, true, null);
       return;
     }
+    _pending = null; // fulfilled
     const audio = slotKey === 'background'
       ? (_bgPlaylist[_bgIdx % _bgPlaylist.length] || tracks[0])
       : tracks[0];
