@@ -2323,6 +2323,7 @@ canvas{display:block;}
       <button class="btn primary" id="btn-end"   disabled onclick="endTurn()">End Turn</button>
       <button class="btn"         id="btn-pause" style="display:none" onclick="togglePause()">⏸ Pause</button>
       <button class="btn"         id="btn-music" onclick="toggleMusic()" style="font-size:.75em;letter-spacing:.1em">🎵 Music: On</button>
+      <button class="btn"         id="btn-next-track" onclick="MusicManager.nextTrack()" style="display:none;font-size:.75em;letter-spacing:.1em">⏭ Next Track</button>
       <button class="btn"         id="btn-new"   onclick="resetToSetup()" style="margin-top:6px">New Game</button>
     </div>
     <div class="log-panel">
@@ -3324,9 +3325,19 @@ const MusicManager = (() => {
   function getVolume() { return _volume; }
   function isEnabled() { return _enabled; }
 
+  // Skip to next background track manually
+  function nextTrack() {
+    if (_bgPlaylist.length === 0) return;
+    _bgIdx = (_bgIdx + 1) % _bgPlaylist.length;
+    _current = null;
+    _switchTo('background', true, null);
+  }
+
   return {
     // Context transitions
     playSplash, playBackground, sting, playPause, resumeFromPause, playGameOver, stopAll,
+    // Track control
+    nextTrack,
     // Volume / enable
     setVolume, setEnabled, toggle, isPlaying, getVolume, isEnabled,
     // Legacy shims
@@ -4397,6 +4408,8 @@ function toggleMusic(){
   const on = MusicManager.toggle();
   const btn = document.getElementById('btn-music');
   if(btn) btn.textContent = on ? '🎵 Music: On' : '🔇 Music: Off';
+  const ntBtn = document.getElementById('btn-next-track');
+  if(ntBtn) ntBtn.style.display = (on && phase!=='setup' && phase!=='game_over') ? 'block' : 'none';
 }
 
 function togglePause(){
@@ -7341,9 +7354,11 @@ function renderUI(){
   document.getElementById('dice-label').textContent=hasRolled?`${movLeft} moves left`:'Ready to roll';
   document.getElementById('dice-sub').textContent=
     phase==='police_turn'?`Officer ${officers[oIdx]?.id||''}`:`Robber ${robbers[rIdx]?.id||''}`;
-  // Pause button — only in autoPlay mode
+  // Pause button — visible any time the game is running (including robber placement)
   const pauseBtn=document.getElementById('btn-pause');
-  pauseBtn.style.display=cfg.autoPlay&&phase!=='game_over'?'block':'none';
+  pauseBtn.style.display=phase!=='game_over'&&robbers.length>0?'block':'none';
+  const nextTrackBtn=document.getElementById('btn-next-track');
+  if(nextTrackBtn) nextTrackBtn.style.display=(phase!=='game_over'&&robbers.length>0&&MusicManager.isEnabled())?'block':'none';
   const dis=animating||(!isHumanTurn()&&!slipPending);
   // Slip-away pending overrides everything — only Roll is active
   if(slipPending!==null){
