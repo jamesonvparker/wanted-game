@@ -161,6 +161,37 @@ canvas{display:block;}
 .ai-entry.warn{color:#aa7744;}
 .ai-entry.warn::before{content:'! ';}
 
+/* ── LEFT PANEL ─────────────────────────────────────── */
+#left-panel{width:220px;flex-shrink:0;display:flex;flex-direction:column;gap:1px;
+  background:var(--border);border:1px solid var(--border);border-right:none;
+  overflow:hidden;align-self:stretch;transition:width .2s ease;}
+#left-panel.lp-hidden{width:0;border:none;}
+.lp-zone{background:var(--bg2);padding:9px 12px;flex-shrink:0;}
+.lp-zone-grow{flex:1;overflow-y:auto;min-height:0;}
+.lp-zone-label{font-size:.48em;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;
+  margin-bottom:5px;padding-bottom:3px;border-bottom:1px solid var(--border);}
+.lp-headline{font-family:'Bebas Neue',sans-serif;font-size:1.8em;letter-spacing:.15em;
+  color:var(--gold);line-height:1.05;margin-bottom:5px;min-height:1.2em;}
+.lp-sub{font-size:.56em;color:var(--gold-dim);line-height:1.6;min-height:2.5em;}
+.lp-mission-name{font-family:'Special Elite',cursive;font-size:.82em;color:var(--gold);
+  margin-bottom:7px;letter-spacing:.04em;line-height:1.3;}
+.lp-mission-row{display:flex;justify-content:space-between;align-items:baseline;
+  padding:4px 0;border-bottom:1px solid var(--border);gap:6px;}
+.lp-mission-lbl{font-size:.5em;color:var(--dim);letter-spacing:.08em;flex-shrink:0;}
+.lp-mission-val{font-size:.52em;color:var(--text);text-align:right;}
+.lp-toggle{background:var(--bg3);border:none;border-top:1px solid var(--border);
+  color:var(--dim);font-family:'Share Tech Mono',monospace;font-size:.52em;
+  letter-spacing:.12em;padding:7px;cursor:pointer;text-transform:uppercase;
+  transition:color .15s;flex-shrink:0;width:100%;text-align:center;}
+.lp-toggle:hover{color:var(--gold);}
+#lp-restore{display:none;position:fixed;left:0;top:50%;transform:translateY(-50%);
+  background:var(--bg3);border:1px solid var(--border);border-left:none;
+  color:var(--dim);font-size:.58em;padding:10px 4px;cursor:pointer;z-index:200;
+  letter-spacing:.1em;font-family:'Share Tech Mono',monospace;
+  writing-mode:vertical-rl;text-transform:uppercase;transition:color .15s;}
+#lp-restore:hover{color:var(--gold);border-color:var(--gold-dark);}
+#lp-restore.show{display:block;}
+
 /* ── SIDEBAR ────────────────────────────────────── */
 .sidebar{width:240px;flex-shrink:0;display:flex;flex-direction:column;gap:1px;
   background:var(--border);border:1px solid var(--border);border-left:none;overflow:hidden;align-self:stretch;}
@@ -2177,6 +2208,38 @@ canvas{display:block;}
 </header>
 
 <div class="game-layout">
+  <!-- LEFT PANEL — Operations Board -->
+  <div id="left-panel">
+    <!-- Zone 1: What to do next -->
+    <div class="lp-zone">
+      <div class="lp-zone-label">Next Action</div>
+      <div class="lp-headline" id="lp-headline">—</div>
+      <div class="lp-sub" id="lp-sub"></div>
+    </div>
+    <!-- Zone 2: Active mission -->
+    <div class="lp-zone lp-zone-grow" id="lp-mission-zone">
+      <div class="lp-zone-label" id="lp-mission-zone-lbl">Active Mission</div>
+      <div class="lp-mission-name" id="lp-mission-name">—</div>
+      <div class="lp-mission-row"><span class="lp-mission-lbl">Target</span><span class="lp-mission-val" id="lp-m-target">—</span></div>
+      <div class="lp-mission-row"><span class="lp-mission-lbl">Exits</span><span class="lp-mission-val" id="lp-m-exits">—</span></div>
+      <div class="lp-mission-row"><span class="lp-mission-lbl">Heist Roll</span><span class="lp-mission-val" id="lp-m-roll">—</span></div>
+      <div class="lp-mission-row"><span class="lp-mission-lbl">Loot Value</span><span class="lp-mission-val" id="lp-m-loot">—</span></div>
+      <div class="lp-mission-row"><span class="lp-mission-lbl">Has Loot</span><span class="lp-mission-val" id="lp-m-hasloot">—</span></div>
+    </div>
+    <!-- Zone 3: Round status -->
+    <div class="lp-zone">
+      <div class="lp-zone-label">Status</div>
+      <div class="status-grid">
+        <div class="stat-box"><div class="stat-label">Round</div><div class="stat-value" id="lp-round">1</div></div>
+        <div class="stat-box"><div class="stat-label">APB Left</div><div class="stat-value" id="lp-apb" style="color:var(--green)">20</div></div>
+        <div class="stat-box"><div class="stat-label">Phase</div><div class="stat-value" id="lp-phase">SETUP</div></div>
+        <div class="stat-box"><div class="stat-label">Heat</div><div class="stat-value" id="lp-heat">0</div></div>
+      </div>
+    </div>
+    <!-- Toggle -->
+    <button class="lp-toggle" onclick="lpToggle()">◀ Hide Panel</button>
+  </div>
+
   <div class="board-wrap">
     <div class="board-section" style="position:relative;">
       <canvas id="board"></canvas>
@@ -2276,6 +2339,7 @@ canvas{display:block;}
     </div>
   </div>
 </div>
+<button id="lp-restore" onclick="lpToggle()">▶ Panel</button>
 
 <!-- DICE MODAL -->
 <div id="dice-modal">
@@ -3615,7 +3679,9 @@ function toggleMute(){
 const COLS=20,ROWS=16;
 let CS=38; // dynamic — recalculated on resize
 
-const SIDEBAR_W=240;
+const SIDEBAR_W=240;   // right sidebar
+const LEFT_PANEL_W=220; // left panel (0 when hidden)
+let _lpVisible=true;   // left panel visible state
 
 let ROUND_LIMIT=20;          // APB expires — game ends at end of this round (overridden by setup)
 const HEAT_SLOW_THRESH=2;    // heat ≥ this → robber roll capped at 4
@@ -3634,7 +3700,8 @@ function resizeCanvas(){
   const cardZone=document.getElementById('card-zone');
   const headerH=header?header.offsetHeight:42;
   const czH=(cardZone&&cardZone.style.display!=='none')?cardZone.offsetHeight||195:0;
-  const availW=window.innerWidth-SIDEBAR_W-2;
+  const lpW=_lpVisible?LEFT_PANEL_W:0;
+  const availW=window.innerWidth-SIDEBAR_W-lpW-2;
   const availH=window.innerHeight-headerH-czH-2;
   const newCS=Math.max(18,Math.floor(Math.min(availW/COLS,availH/ROWS)));
   CS=newCS;
@@ -7346,8 +7413,87 @@ function renderUI(){
     (phase==='police_turn'&&oRolled)
   );
   renderHand();
+  safeCall('renderLeftPanel', renderLeftPanel);
 }
 
+function renderLeftPanel(){
+  // ── Zone 1: headline + sub ───────────────────────────
+  const instRaw = getInst(); // HTML string
+  // Strip tags for the big headline, keep a short version
+  const tmp = document.createElement('div');
+  tmp.innerHTML = instRaw;
+  const plain = tmp.textContent || '';
+  // Headline: first "word group" up to first punctuation or dash
+  const headMatch = plain.match(/^[^—\-–\.!?]+/);
+  const head = headMatch ? headMatch[0].replace(/^[^\w]+/,'').trim() : plain.slice(0,28);
+  // Sub: full instruction but stripped of leading emoji/bold noise
+  const sub = plain.replace(/^[^\w]+/,'').trim();
+  document.getElementById('lp-headline').textContent = head || '—';
+  document.getElementById('lp-sub').textContent = sub.length > head.length ? sub : '';
+
+  // ── Zone 2: mission card ─────────────────────────────
+  const mzone = document.getElementById('lp-mission-zone');
+  const isRobberHuman = !cfg.autoPlay && (cfg.playerSide === 'robbers' || cfg.opponent === 'human');
+  const isPoliceHuman = !cfg.autoPlay && cfg.playerSide === 'police';
+
+  if(isRobberHuman && robbers.length > 0){
+    const rb = robbers[rIdx] || robbers[0];
+    const m = rb?.mission;
+    if(m){
+      document.getElementById('lp-mission-zone-lbl').textContent = `Mission — ${rb.id}`;
+      document.getElementById('lp-mission-name').textContent = m.name || '—';
+      document.getElementById('lp-m-target').textContent = LOCS[m.target]?.name || m.target || '—';
+      document.getElementById('lp-m-exits').textContent = (m.exitIds||[]).join(' · ') || m.exits || '—';
+      document.getElementById('lp-m-roll').textContent = (HEIST_REQ[m.target]||4) + ' or higher';
+      document.getElementById('lp-m-loot').textContent = (m.reward||'?') + ' pts';
+      document.getElementById('lp-m-hasloot').textContent = rb.hasLoot ? 'Yes — head to exit!' : 'No';
+      document.getElementById('lp-m-hasloot').style.color = rb.hasLoot ? 'var(--green)' : 'var(--dim)';
+      mzone.style.display = '';
+    }
+  } else if(isPoliceHuman){
+    // Show robber heat summary for police player
+    document.getElementById('lp-mission-zone-lbl').textContent = 'Suspect Intel';
+    document.getElementById('lp-mission-name').textContent = 'Known Robber Status';
+    const rows = ['target','exits','roll','loot','hasloot'];
+    const labels = ['Robber','Location','Heat','Has Loot','Warrants'];
+    const vals = robbers.map((rb,i) => {
+      const cell = rb.pos ? grid[rb.pos.r]?.[rb.pos.c] : null;
+      return [rb.id, cell ? `[${rb.pos.c},${rb.pos.r}]` : '?', rb.heat, rb.hasLoot?'Yes':'No', officers.reduce((a,o)=>a+o.warrants,0)];
+    });
+    const rb0 = robbers[0];
+    document.getElementById('lp-m-target').textContent = rb0?.id || '—';
+    document.getElementById('lp-m-exits').textContent = rb0?.pos ? `[${rb0.pos.c},${rb0.pos.r}]` : '?';
+    document.getElementById('lp-m-roll').textContent = 'Heat: ' + (rb0?.heat||0);
+    document.getElementById('lp-m-loot').textContent = rb0?.hasLoot ? 'Carrying loot!' : 'No loot yet';
+    document.getElementById('lp-m-hasloot').textContent = 'Warrants: ' + officers.reduce((a,o)=>a+o.warrants,0);
+    document.getElementById('lp-m-hasloot').style.color = 'var(--text)';
+    mzone.style.display = '';
+  } else {
+    mzone.style.display = 'none';
+  }
+
+  // ── Zone 3: round status ─────────────────────────────
+  document.getElementById('lp-round').textContent = round;
+  const apbLeft = Math.max(0, ROUND_LIMIT - round + 1);
+  const apbEl = document.getElementById('lp-apb');
+  apbEl.textContent = apbLeft;
+  apbEl.style.color = apbLeft<=3?'var(--red)':apbLeft<=6?'#f59e0b':'var(--green)';
+  document.getElementById('lp-phase').textContent =
+    phase==='setup'?'SETUP':phase==='robber_turn'?'ROBBER':phase==='police_turn'?'POLICE':phase==='civilian_turn'?'CIVILIAN':'OVER';
+  const totalHeat = robbers.reduce((a,rb)=>a+(rb.heat||0),0);
+  document.getElementById('lp-heat').textContent = totalHeat;
+}
+
+function lpToggle(){
+  _lpVisible = !_lpVisible;
+  const panel = document.getElementById('left-panel');
+  const restore = document.getElementById('lp-restore');
+  panel.classList.toggle('lp-hidden', !_lpVisible);
+  restore.classList.toggle('show', !_lpVisible);
+  // Save preference and recalculate board size
+  try { localStorage.setItem('wanted_lp_visible', _lpVisible ? '1' : '0'); } catch(e){}
+  setTimeout(()=>{ resizeCanvas(); if(typeof renderAll==='function') renderAll(); }, 210);
+}
 function getInst(){
   if(slipPending!==null){
     const rb=robbers[slipPending.ri];
@@ -9465,6 +9611,17 @@ function v25LoadSettings() {
     if (typeof d.cinematic === 'boolean') cfg.cinematic = d.cinematic;
     console.log('[V25] Settings loaded from localStorage');
   } catch(e) { console.warn('[V25] localStorage load failed', e.message); }
+  // Restore left panel visibility
+  try {
+    const lpPref = localStorage.getItem('wanted_lp_visible');
+    if (lpPref === '0') {
+      _lpVisible = false;
+      const panel = document.getElementById('left-panel');
+      const restore = document.getElementById('lp-restore');
+      if (panel) panel.classList.add('lp-hidden');
+      if (restore) restore.classList.add('show');
+    }
+  } catch(e) {}
 }
 
 // ── HOW TO PLAY ────────────────────────────────────────────
